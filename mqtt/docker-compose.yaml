@@ -1,0 +1,110 @@
+version: "3.7"
+services:
+  emqx:
+    stdin_open: true
+    tty: true
+    restart: always
+    image: emqx/emqx:v3.0-rc.5
+    container_name: emqx
+    entrypoint: []
+    environment:
+      EMQX_ALLOW_ANONYMOUS: "true"
+      EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard"
+    ports:
+      - "18083:18083"
+      - "1883:1883"
+      - "8080:8080"
+
+      #https://hub.docker.com/r/raymondmm/emqtt pour docker-compose
+
+    volumes:
+      - ./emqx/log:/opt/emqx/log #able to mount but 
+#      - ./emqx/data:/opt/emqx/data #not working
+#      - ./emqx/lib:/opt/emqx/lib #not working
+#      - ./emqx/etc:/opt/emqx/etc #not working
+#https://github.com/emqx/emqx-docker/issues/89
+#  vmq0:
+#    image: vernemq/vernemq
+#    environment:
+#      DOCKER_VERNEMQ_SWARM: 1
+#      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
+#  vmq:
+#    image: vernemq/vernemq
+#    depends_on:
+#      - vmq0
+#    environment:
+#      DOCKER_VERNEMQ_SWARM: 1
+#      DOCKER_VERNEMQ_DISCOVERY_NODE: vmq0
+#      DOCKER_VERNEMQ_ALLOW_ANONYMOUS: "on"
+#    deploy:
+#      replicas: 2
+#https://github.com/vernemq/docker-vernemq
+  consumer:
+    build: ./consumer
+    container_name: consumer
+    environment:
+      ES01: http://es01:9200
+      ES02: http://es02:9200
+      MQTT_HOST: emqx
+      MQTT_PORT: 1883
+      MQTT_TOPIC: "house/gaz"
+      INDEX: "house-gaz"
+      DOC_TYPE: "perfect-gaz"
+  publisher:
+    build: ./publisher
+    container_name: publisher
+    environment:
+      MQTT_HOST: emqx
+      MQTT_PORT: 1883
+      MQTT_TOPIC: "house/gaz"
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
+    container_name: es01
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
+    container_name: es02
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.4.1
+    container_name: kibana
+    depends_on:
+      - es01
+      - es02
+    ports:
+      - "5601:5601"
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_HOSTS: http://es01:9200
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
+  
