@@ -12,4 +12,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 RUN python setup.py test
 
+#TODO run src/main.py file at the container execution
 CMD ["python", "src/main.py" ]

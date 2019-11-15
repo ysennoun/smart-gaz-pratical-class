@@ -7,7 +7,7 @@ R = 8.3144621 # J K−1 mol−1
 @dataclass
 class GazMetrics:
     pressure_in_bar: float
-    temperature_in_c: float
+	temperature_in_c: float
     volume_in_l: float
     timestamp: datetime
 
@@ -46,7 +46,7 @@ def get_number_of_moles(gaz_metrics: GazMetrics) -> int:
 
 
 def get_document_to_insert(number_of_moles: int, gaz_metrics: GazMetrics) -> dict:
-	#TODO
+	#TODO create a dictionary from number_of_moles and gaz_metrics (e.g: {"number_of_moles":11, "pressure_in_bar": 12, "temperature_in_c": 22, "volume_in_l": 44, "timestamp": datetime(2019,11,12)}
 	document = asdict(gaz_metrics)
 	document["number_of_moles"] = number_of_moles
 	return document

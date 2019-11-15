@@ -5,16 +5,21 @@ from utils import iot_data
 
 class TestIoTData(unittest.TestCase):
 
+    #TODO Complete unit test
     def test_get_decoded_message(self):
         # Given
+        #TODO define two variables: payload as b"data" and the expected result as "data"
         payload = b"data"
         expected_decoded_message = "data"
 
         # When
+        #TODO call function to decode message
         decoded_message = iot_data.get_decoded_message(payload)
 
         # Then
+        # TODO verify that result of the function called is equal to the expected result
         self.assertEqual(decoded_message, expected_decoded_message)
+        # self.assertEqual(True, False) # to be removed
 
     def test_get_gaz_metrics(self):
         # Given
