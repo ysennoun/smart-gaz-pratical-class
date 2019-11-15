@@ -1,29 +1,88 @@
-docker-compose build
-docker-compose up
-docker-compose down
-docker exec -it consumer bash
-docker exec -it publisher bash
-docker-compose logs publisher
+# Smart Gaz Pratical Class : MQTT protocol
 
-localhost:5601
+## Context
 
-curl -X POST "es02:9200/twitter/_doc/?pretty" -H 'Content-Type: application/json' -d'
-{
-    "user" : "kimchy",
-    "post_date" : "2019-11-16T10:10:12",
-    "message" : "trying out Elasticsearch"
-}
-'
+Let's assume we want to develop a system that monitors a parc of gaz bottles. 
+The purpose of this pratical class is to simulate a smart gaz meter that periodically measures ans sends the pressure, the temperature of an gaz bottle to an IoT platform.
+In order to send data, the smart gaz meter needs to communicate withe the IoT platform by using an application protocol. Here we will use MQTT and CoAP.
+Finally, at every data reception the IoT platform does a transformation process before storing the modified data. 
 
+Here is an image of the desired system:
 
-gaz parfait hélium
-P.V = n.R.T
-https://industrie.airliquide.fr/sites/industry_fr/files/2016/06/24/gamme-bouteilles_air-liquide-france-industrie_4310879549933597796.pdf
-https://fr.wikipedia.org/wiki/Gaz_parfait
-V=50L
-P=200Bar
-R = 8,314 462 1 J K−1 mol−1
-T= 25°C
+![System to develop](docs/system.png)
 
-coap application https://fr.wikipedia.org/wiki/CoAP#Impl%C3%A9mentations_et_Applications_pratiques
+- a smart gaz meter (publisher) measuring and sending data in MQTT
+- a MQTT broker
+- a consumer retrieving and processing data before storing it
+- a database (here we use [Elasticsearch](https://www.elastic.co/fr/products/elasticsearch))
+- a tool to visualize data (here we use [Kibana](https://www.elastic.co/fr/products/kibana))
 
+In this pratical class you will be asked to implement the previous system.
+
+## Implementation
+
+### Publisher
+
+Let's develop the publisher. Go to folder publisher where you will find four python files:
+- src/main.py file where every ten second data is sent to a MQTT broker
+- src/utils/iot_data.py file where you have to implement functions to compute data to be sent
+- test/utils/test_iot_data.py where you have to complete unit tests for functions in src/utils/iot_data.py 
+- setup.py file that handles installation the python project. Run `python setup.py` test to validate you implementation.
+
+### Consumer
+
+Let's develop the consumer. Go to folder consumer where you will find five python files:
+- src/main.py file where data is retrieved from a MQTT broker
+- src/utils/es_client.py where an Elasticsearch client is implemented to insert data in Elasticsearch
+- src/utils/iot_data.py file where you have to implement functions to process data to be stored
+- test/utils/test_iot_data.py where you have to complete unit tests for functions in src/utils/iot_data.py 
+- setup.py file that handles installation the python project. Run `python setup.py` test to validate you implementation.
+
+### Install setup
+
+#### Configuration
+
+Let's install the system presented in the following picture:
+
+![System to develop](docs/system.png)
+
+You will use docker to install every component within containers
+
+- Complete producer/Dockerfile to run src/main.py file at the container execution
+- Complete consumer/Dockerfile to run src/main.py file at the container execution
+- Complete docker-compose.yaml (configuration file for all system)
+
+#### Run
+
+Run the following commands:
+
+    docker-compose build # build all system
+    docker-compose up # run all container of the system
+    docker-compose down # in case you want to stop all containers of the system 
+
+In case where a port is already used in your computer, run the following command to stop the service:
+
+    kill -9 $(lsof -t -i:<port>)
+
+If you need to access to containers use the following commands:
+
+    docker exec -it consumer bash
+    docker exec -it publisher bash
+
+If you need to access to logs of a container use the following command:
+    
+    docker-compose logs publisher
+
+### Visualize data
+
+Let's visualize data stored in database. Open a navigator and goes to `http://localhost:5601`.
+
+You shoud see the following screen:
+
+![Kibana](docs/kibana.png)
+
+As indicated with numbers in the previous image, do the following steps:
+
+- 1: Configure index pattern (you should see your index name that your indicated in the docker-compose.yaml)
+- 2: Explore your data
+- 3: Create a visualization like a line chart to show the evolution of number of moles and pressure over time

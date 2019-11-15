@@ -13,8 +13,6 @@ pressure = iot_data.MAX_PRESSURE
 temperature = iot_data.TEMPERATURE
 volume = iot_data.VOLUME
 
-print(pressure)
-
 time.sleep(30)
 
 while True:

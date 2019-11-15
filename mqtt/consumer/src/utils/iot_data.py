@@ -13,10 +13,13 @@ class GazMetrics:
 
 
 def get_decoded_message(payload: bytes) -> str:
+	#TODO decode payload with format "utf-8
 	return str(payload.decode("utf-8"))
 
 
 def get_gaz_metrics(raw_data: str) -> GazMetrics:
+	#TODO from hexadecimal string (e.g "0xf41932") get pressure in bar (f4->244bar), temperature in celsius (19->25°C) and volume in liter (32 -> 50L)
+	#TODO return a GazMetrics with current datetime
 	data = raw_data.split("x")[1]
 	hex_values = re.findall('.{1,2}', data)
 	values = [int(hv, 16) for hv in hex_values]
@@ -29,9 +32,8 @@ def get_gaz_metrics(raw_data: str) -> GazMetrics:
 
 
 def get_number_of_moles(gaz_metrics: GazMetrics) -> int:
-	print("get_number_of_moles")
-	print(gaz_metrics)
-
+	#TODO compute the number of moles n by using the formula for perfect gas PV = nRT
+	#TODO where P is expressed in Pa, V in m3, T in Kelvin and R 8.3144621 J K−1 mol−1
 	pressure_in_pa = gaz_metrics.pressure_in_bar * 100000
 	temperature_in_kelvin = gaz_metrics.temperature_in_c + 273.15
 	volume_in_m3 = gaz_metrics.volume_in_l * 0.001
@@ -44,6 +46,7 @@ def get_number_of_moles(gaz_metrics: GazMetrics) -> int:
 
 
 def get_document_to_insert(number_of_moles: int, gaz_metrics: GazMetrics) -> dict:
+	#TODO
 	document = asdict(gaz_metrics)
 	document["number_of_moles"] = number_of_moles
 	return document
