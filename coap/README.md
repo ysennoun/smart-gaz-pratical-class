@@ -11,8 +11,8 @@ Here is an image of the desired system:
 
 ![System to develop](docs/coap-system.png)
 
-- a smart gaz meter (publisher) measuring and sending data in CoAP
-- a consumer retrieving and processing data before storing it
+- a smart gaz meter (client) measuring and sending data in CoAP
+- a server retrieving and processing data before storing it
 - a database (here we use [Elasticsearch](https://www.elastic.co/fr/products/elasticsearch))
 - a tool to visualize data (here we use [Kibana](https://www.elastic.co/fr/products/kibana))
 
@@ -20,17 +20,19 @@ In this pratical class you will be asked to implement the previous system.
 
 ## Implementation
 
-### Publisher
+### Client
 
-Let's develop the publisher. Go to folder publisher where you will find #TODO tasks to complete within four python files:
+Let's develop the client. Go to folder client where you will find #TODO tasks to complete within four python files and a requirements file:
+- requirements.txt specifies all dependencies used within this python project. Run `pip install -r requirements.txt`
 - src/main.py file where every ten second data is sent to a CoAP client
 - src/utils/iot_data.py file where you have to implement functions to compute data to be sent
 - test/utils/test_iot_data.py where you have to complete unit tests for functions in src/utils/iot_data.py 
 - setup.py file that handles installation the python project. Run `python setup.py test` to validate you implementation.
 
-### Consumer
+### Server
 
-Let's develop the consumer. Go to folder consumer where you will find #TODO tasks to complete within five python files:
+Let's develop the server. Go to folder server where you will find #TODO tasks to complete within five python files and a requirements file::
+- requirements.txt specifies all dependencies used within this python project. Run `pip install -r requirements.txt`
 - src/main.py file where data is retrieved from a CoAP server
 - src/utils/es_client.py where an Elasticsearch client is implemented to insert data in Elasticsearch
 - src/utils/iot_data.py file where you have to implement functions to process data to be stored
