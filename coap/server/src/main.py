@@ -1,4 +1,5 @@
 import os
+import time
 from coapthon.server.coap import CoAP
 from utils.iot_resource import IoTResource
 
@@ -23,4 +24,5 @@ def main():
 
 
 if __name__ == '__main__':
+    time.sleep(30)
     main()

@@ -1,8 +1,8 @@
 version: "3.7"
 services:
-  coapserver:
+  coap-server:
     build: ./server
-    container_name: coapserver
+    container_name: coap-server
     environment:
       ES01: http://coap-es01:9200 #TODO indicate url (http://<name-node>:port) of the first node of Elasticsearch cluster
       ES02: http://coap-es02:9200 #TODO indicate url of the second node of Elasticsearch cluster
@@ -14,11 +14,11 @@ services:
       - 5683:5683
     networks:
      - coap-network
-  coapclient:
+  coap-client:
     build: ./client
-    container_name: coapclient
+    container_name: coap-client
     environment:
-      COAP_HOST: coapserver #TODO indicate hotsname of the CoAP server to contact
+      COAP_HOST: coap-server #TODO indicate hotsname of the CoAP server to contact
       COAP_PORT: 5683
       IOT_RESOURCE: "gas"
     networks:

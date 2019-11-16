@@ -16,7 +16,7 @@ time.sleep(30)
 while True:
     client = HelperClient(server=(COAP_HOST, COAP_PORT))
     data_as_hex = iot_data.get_data_as_hex(pressure, temperature, volume)
-    response = client.post(path=IOT_RESOURCE, payload=data_as_hex)
+    response = client.post(path=IOT_RESOURCE, payload=data_as_hex, no_response=True)
     client.stop()
     time.sleep(10)
     pressure = iot_data.get_new_pressure(pressure)
