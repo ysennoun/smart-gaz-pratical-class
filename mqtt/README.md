@@ -85,4 +85,4 @@ As indicated with numbers in the previous image, do the following steps:
 
 - 1: Configure index pattern (you should see your index name that your indicated in the docker-compose.yaml)
 - 2: Explore your data
-- 3: Create a visualization like a line chart to show the evolution of number of moles and pressure over time
+- 3: Create a [visualization](https://www.elastic.co/guide/en/kibana/current/visualize.html) like a line chart to show the evolution of number of moles and pressure over time
