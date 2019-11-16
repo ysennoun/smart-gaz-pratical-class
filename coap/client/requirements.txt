@@ -1,0 +1,2 @@
+setuptools
+CoAPthon3>=1.0.1

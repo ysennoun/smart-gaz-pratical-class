@@ -1,0 +1,87 @@
+version: "3.7"
+services:
+  emqx:
+    stdin_open: true
+    tty: true
+    restart: always
+    image: emqx/emqx:v3.0-rc.5
+    container_name: emqx
+    entrypoint: []
+    environment:
+      EMQX_ALLOW_ANONYMOUS: "true"
+      EMQX_LOADED_PLUGINS: "emqx_recon,emqx_retainer,emqx_management,emqx_dashboard"
+    ports:
+      - "18083:18083"
+      - "1883:1883"
+      - "8080:8080"
+    volumes:
+      - ./emqx/log:/opt/emqx/log
+  consumer:
+    build: ./server
+    container_name: server
+    environment:
+      ES01: #TODO indicate url (http://<name-node>:port) of the first node of Elasticsearch cluster
+      ES02: #TODO indicate url of the second node of Elasticsearch cluster
+      MQTT_HOST: emqx
+      MQTT_PORT: 1883
+      MQTT_TOPIC: "house/gas"
+      INDEX: "house-gas"
+      DOC_TYPE: "perfect-gas"
+  publisher:
+    build: ./client
+    container_name: client
+    environment:
+      MQTT_HOST: #TODO indicate name of service in charge of the MQTT broker
+      MQTT_PORT: 1883
+      MQTT_TOPIC: "house/gas"
+  es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
+    container_name: es01
+    environment:
+      - node.name=es01
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - #TODO make port 9200 to be reachable from a external call
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
+    container_name: es02
+    environment:
+      - node.name=es02
+      - discovery.seed_hosts=es01
+      - cluster.initial_master_nodes=es01,es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.4.1
+    container_name: kibana
+    depends_on:
+      - es01
+      - es02
+    ports:
+      - "5601:5601"
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_HOSTS: #TODO indicate url of first node of Elasticsearch cluster
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
+  
