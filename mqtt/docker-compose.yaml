@@ -17,23 +17,23 @@ services:
     volumes:
       - ./emqx/log:/opt/emqx/log
   consumer:
-    build: ./consumer
-    container_name: consumer
+    build: ./server
+    container_name: server
     environment:
-      ES01: http://es01:9200
-      ES02: http://es02:9200
+      ES01: http://es01:9200 #TODO indicate url (http://<name-node>:port) of the first node of Elasticsearch cluster
+      ES02: http://es02:9200 #TODO indicate url of the second node of Elasticsearch cluster
       MQTT_HOST: emqx
       MQTT_PORT: 1883
-      MQTT_TOPIC: "house/gaz"
-      INDEX: "house-gaz"
-      DOC_TYPE: "perfect-gaz"
+      MQTT_TOPIC: "house/gas"
+      INDEX: "house-gas"
+      DOC_TYPE: "perfect-gas"
   publisher:
-    build: ./publisher
-    container_name: publisher
+    build: ./client
+    container_name: client
     environment:
-      MQTT_HOST: emqx
+      MQTT_HOST: emqx #TODO indicate name of service in charge of the MQTT broker
       MQTT_PORT: 1883
-      MQTT_TOPIC: "house/gaz"
+      MQTT_TOPIC: "house/gas"
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
     container_name: es01
@@ -51,7 +51,7 @@ services:
     volumes:
       - esdata01:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
+      - 9200:9200 #TODO make port 9200 to be reachable from a external call
   es02:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
     container_name: es02
@@ -78,7 +78,7 @@ services:
       - "5601:5601"
     environment:
       SERVER_NAME: localhost
-      ELASTICSEARCH_HOSTS: http://es01:9200
+      ELASTICSEARCH_HOSTS: http://es01:9200 #TODO indicate url of first node of Elasticsearch cluster
 volumes:
   esdata01:
     driver: local

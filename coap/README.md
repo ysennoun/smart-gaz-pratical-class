@@ -1,18 +1,17 @@
-# Smart Gaz Pratical Class : MQTT protocol
+# Smart Gaz Pratical Class : CoAP protocol
 
 ## Context
 
 Let's assume we want to develop a system that monitors a parc of gaz bottles. 
 The purpose of this pratical class is to simulate a smart gaz meter that periodically measures ans sends the pressure, the temperature of an gaz bottle to an IoT platform.
-In order to send data, the smart gaz meter needs to communicate withe the IoT platform by using an application protocol. Here we will use MQTT.
+In order to send data, the smart gaz meter needs to communicate withe the IoT platform by using an application protocol. Here we will use CoAP.
 Finally, at every data reception the IoT platform does a transformation process before storing the modified data. 
 
 Here is an image of the desired system:
 
-![System to develop](docs/mqtt-system.png)
+![System to develop](docs/coap-system.png)
 
-- a smart gaz meter (publisher) measuring and sending data in MQTT
-- a MQTT broker
+- a smart gaz meter (publisher) measuring and sending data in CoAP
 - a consumer retrieving and processing data before storing it
 - a database (here we use [Elasticsearch](https://www.elastic.co/fr/products/elasticsearch))
 - a tool to visualize data (here we use [Kibana](https://www.elastic.co/fr/products/kibana))
@@ -24,7 +23,7 @@ In this pratical class you will be asked to implement the previous system.
 ### Publisher
 
 Let's develop the publisher. Go to folder publisher where you will find four python files:
-- src/main.py file where every ten second data is sent to a MQTT broker
+- src/main.py file where every ten second data is sent to a CoAP client
 - src/utils/iot_data.py file where you have to implement functions to compute data to be sent
 - test/utils/test_iot_data.py where you have to complete unit tests for functions in src/utils/iot_data.py 
 - setup.py file that handles installation the python project. Run `python setup.py` test to validate you implementation.
@@ -32,7 +31,7 @@ Let's develop the publisher. Go to folder publisher where you will find four pyt
 ### Consumer
 
 Let's develop the consumer. Go to folder consumer where you will find five python files:
-- src/main.py file where data is retrieved from a MQTT broker
+- src/main.py file where data is retrieved from a CoAP server
 - src/utils/es_client.py where an Elasticsearch client is implemented to insert data in Elasticsearch
 - src/utils/iot_data.py file where you have to implement functions to process data to be stored
 - test/utils/test_iot_data.py where you have to complete unit tests for functions in src/utils/iot_data.py 
@@ -44,12 +43,12 @@ Let's develop the consumer. Go to folder consumer where you will find five pytho
 
 Let's install the system presented in the following picture:
 
-![System to develop](docs/mqtt-system.png)
+![System to develop](docs/coap-system.png)
 
 You will use docker to install every component within containers
 
-- Complete producer/Dockerfile to run src/main.py file at the container execution
-- Complete consumer/Dockerfile to run src/main.py file at the container execution
+- Complete client/Dockerfile to run src/main.py file at the container execution
+- Complete server/Dockerfile to run src/main.py file at the container execution
 - Complete docker-compose.yaml (configuration file for all system)
 
 #### Run
@@ -66,12 +65,12 @@ In case where a port is already used in your computer, run the following command
 
 If you need to access to containers use the following commands:
 
-    docker exec -it consumer bash
-    docker exec -it publisher bash
+    docker exec -it coapclient bash
+    docker exec -it coapserver bash
 
 If you need to access to logs of a container use the following command:
     
-    docker-compose logs publisher
+    docker-compose logs coapclient
 
 ### Visualize data
 

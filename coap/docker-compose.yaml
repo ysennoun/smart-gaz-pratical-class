@@ -1,0 +1,85 @@
+version: "3.7"
+services:
+  coapserver:
+    build: ./server
+    container_name: coapserver
+    environment:
+      ES01: http://coap-es01:9200 #TODO indicate url (http://<name-node>:port) of the first node of Elasticsearch cluster
+      ES02: http://coap-es02:9200 #TODO indicate url of the second node of Elasticsearch cluster
+      COAP_PORT: 5683
+      IOT_RESOURCE: "gas"
+      INDEX: "house-gas"
+      DOC_TYPE: "perfect-gas"
+    ports:
+      - 5683:5683
+    networks:
+     - coap-network
+  coapclient:
+    build: ./client
+    container_name: coapclient
+    environment:
+      COAP_HOST: coapserver #TODO indicate hotsname of the CoAP server to contact
+      COAP_PORT: 5683
+      IOT_RESOURCE: "gas"
+    networks:
+     - coap-network
+  coap-es01:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
+    container_name: coap-es01
+    environment:
+      - node.name=coap-es01
+      - discovery.seed_hosts=coap-es02
+      - cluster.initial_master_nodes=coap-es01,coap-es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+     - coap-network
+  coap-es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.1
+    container_name: coap-es02
+    environment:
+      - node.name=coap-es02
+      - discovery.seed_hosts=coap-es01
+      - cluster.initial_master_nodes=coap-es01,coap-es02
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata02:/usr/share/elasticsearch/data
+    networks:
+     - coap-network
+  coap-kibana:
+    image: docker.elastic.co/kibana/kibana:7.4.1
+    container_name: coap-kibana
+    depends_on:
+      - coap-es01
+      - coap-es02
+    ports:
+      - "5601:5601"
+    environment:
+      SERVER_NAME: localhost
+      ELASTICSEARCH_HOSTS: http://coap-es01:9200 #TODO indicate url of first node of Elasticsearch cluster
+    networks:
+     - coap-network
+volumes:
+  esdata01:
+    driver: local
+  esdata02:
+    driver: local
+networks:
+  coap-network:
+    driver: bridge
+  
