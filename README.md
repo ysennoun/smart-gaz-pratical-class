@@ -1,5 +1,7 @@
 # Smart Gaz Pratical Class
 
+## Context
+
 This project is a pratical class to teach students how to use MQTT and CoAP protocols within an IoT project.
 
 This is a git project with two main branches:
@@ -11,3 +13,33 @@ This project is composed of two parts:
 - COAP
 
 First start with the MQTT part by reading the file mqtt/README.mq. Finally, finish with the COAP part by reading the file coap/README.mq
+
+## Introduction to docker
+
+This project uses Docker, an implementation of the technology of Linux containerization, to encapsulate linux processes. 
+
+### VM vs Container
+
+![VM vs Container](docs/vm-vs-docker-container.png)
+
+A Virtual Machine integrates an OS with application which makes it heavy.
+
+A Docker Container only integrates application and libraries, it uses the basic Linux OS functionalities of the host machine.
+
+### Definition
+
+Here is the main concepts to learn about Docker:
+
+- A Docker image is a snapshot of the process you want to run (code, OS, environment variables...)
+- A Dockerfile is a file that defines a Docker image
+- A Docker container is an instantiation of a Docker image
+
+Here is the main commands:
+
+Build an Docker image
+
+    docker build -t <docker-image-name>:<docker-image-tag> -f /path/to/Dockerfile .
+    
+Run a Docker container
+
+    docker run -it <docker-image-name>:<docker-image-tag> 
