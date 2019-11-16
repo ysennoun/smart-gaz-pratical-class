@@ -27,7 +27,7 @@ Let's develop the publisher. Go to folder publisher where you will find #TODO ta
 - src/main.py file where every ten second data is sent to a MQTT broker
 - src/utils/iot_data.py file where you have to implement functions to compute data to be sent
 - test/utils/test_iot_data.py where you have to complete unit tests for functions in src/utils/iot_data.py 
-- setup.py file that handles installation the python project. Run `python setup.py` test to validate you implementation.
+- setup.py file that handles installation the python project. Run `python setup.py test` to validate you implementation.
 
 ### Consumer
 
@@ -36,7 +36,7 @@ Let's develop the consumer. Go to folder consumer where you will find #TODO task
 - src/utils/es_client.py where an Elasticsearch client is implemented to insert data in Elasticsearch
 - src/utils/iot_data.py file where you have to implement functions to process data to be stored
 - test/utils/test_iot_data.py where you have to complete unit tests for functions in src/utils/iot_data.py 
-- setup.py file that handles installation the python project. Run `python setup.py` test to validate you implementation.
+- setup.py file that handles installation the python project. Run `python setup.py test` to validate you implementation.
 
 ### Install setup
 

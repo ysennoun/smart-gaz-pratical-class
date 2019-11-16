@@ -38,8 +38,19 @@ Here is the main commands:
 
 Build an Docker image
 
-    docker build -t <docker-image-name>:<docker-image-tag> -f /path/to/Dockerfile .
+    docker build -t <docker-image-name>:<docker-image-tag> -f /path/to/Dockerfile
     
 Run a Docker container
 
     docker run -it <docker-image-name>:<docker-image-tag> 
+    
+### Docker compose
+
+To run multiple Docker containers at the same time, use docker-compose. 
+Indeed, from a yaml file name `docker-compose.yaml` you can specify all services and their corresponding Docker image to deploy.
+
+Commands to use fom your project directory where there is `docker-compose.yaml`:
+
+    docker-compose build # build all system
+    docker-compose up # run all container of the system
+    docker-compose down # in case you want to stop all containers of the system 
