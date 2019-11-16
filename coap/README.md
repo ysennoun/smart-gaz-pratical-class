@@ -80,6 +80,7 @@ Let's visualize data stored in database. Open a navigator and goes to `http://lo
 
 You shoud see the following screen:
 
+
 ![Kibana](docs/kibana.png)
 
 As indicated with numbers in the previous image, do the following steps:
