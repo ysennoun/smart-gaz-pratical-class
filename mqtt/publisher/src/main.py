@@ -17,7 +17,7 @@ time.sleep(30)
 
 while True:
 	client = mqtt.Client()
-	client.connect(MQTT_HOST, MQTT_PORT, KEEP_ALIVE)
+	client.connect(MQTT_HOST, MQTT_PORT, KEEP_ALIVE) #TODO connect client by specifying host, port and keep alive
 	data_as_hex = iot_data.get_data_as_hex(pressure, temperature, volume)
 	res = client.publish(MQTT_TOPIC, data_as_hex)
 	print(str(res))

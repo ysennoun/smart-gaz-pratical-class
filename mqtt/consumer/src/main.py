@@ -1,6 +1,5 @@
 import os
 import time
-from datetime import datetime
 import paho.mqtt.client as mqtt
 from utils import iot_data
 from utils.es_client import insert_to_es
@@ -17,7 +16,7 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe(MQTT_TOPIC)
+    client.subscribe(MQTT_TOPIC) #TODO subscribe client to topic
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
@@ -33,7 +32,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect(MQTT_HOST, MQTT_PORT, KEEP_ALIVE)
+client.connect(MQTT_HOST, MQTT_PORT, KEEP_ALIVE) #TODO connect client by specifying host, port and keep alive
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
