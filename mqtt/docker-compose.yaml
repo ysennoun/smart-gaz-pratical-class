@@ -17,8 +17,8 @@ services:
     volumes:
       - ./emqx/log:/opt/emqx/log
   consumer:
-    build: ./server
-    container_name: server
+    build: ./consumer
+    container_name: consumer
     environment:
       ES01: http://es01:9200 #TODO indicate url (http://<name-node>:port) of the first node of Elasticsearch cluster
       ES02: http://es02:9200 #TODO indicate url of the second node of Elasticsearch cluster
@@ -28,8 +28,8 @@ services:
       INDEX: "house-gas"
       DOC_TYPE: "perfect-gas"
   publisher:
-    build: ./client
-    container_name: client
+    build: ./publisher
+    container_name: publisher
     environment:
       MQTT_HOST: emqx #TODO indicate name of service in charge of the MQTT broker
       MQTT_PORT: 1883
